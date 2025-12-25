@@ -1,0 +1,30 @@
+import pandas as pd
+from google. colab import files
+import io
+print("please upload the 'API_NY.GDP.MKTP.CD_DS2_en_excel_v2_129.xls' file. ")
+uploaded=files. upload ()
+file_name=list(uploaded. keys())[0]
+df = pd.read_excel(io. BytesIO(uploaded [file_name]), sheet_name="Data", skiprows=3)
+df.head()
+import matplotlib. pyplot as plt
+india_gdp = df[df["Country Name"] == "India"]
+year_columns = [col for col in india_gdp.columns if col.isdigit()]
+india_gdp_ts = india_gdp[year_columns].T
+india_gdp_ts.columns = ["GDP_Current_USD"]
+india_gdp_ts.index = india_gdp_ts.index.astype(int)
+india_gdp_ts.head()
+plt.figure()
+plt.bar(india_gdp_ts.index, india_gdp_ts["GDP_Current_USD"])
+plt.xlabel("Year")
+plt.ylabel("GDP (Current US$)")
+plt.title("India GDP (Current US$) Over Time")
+plt.xticks(rotation=90)
+plt.tight_layout()
+plt.show()
+plt.figure()
+plt.hist(india_gdp_ts["GDP_Current_USD"].dropna(), bins=15)
+plt.xlabel("GDP (Current US$)")
+plt.ylabel("Frequency")
+plt.title("Distribution of India GDP (Current US$)")
+plt.tight_layout()
+plt.show()
